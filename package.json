@@ -3,10 +3,9 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "node --env-file=.env dist/index.js",
-    "dev": "nodemon --env-file=.env dist/index.js -w dist",
-    "build": "rimraf dist && tsc",
-    "build:dev": "tsc -w"
+    "start": "npm run build && node --env-file=.env dist/index.js",
+    "dev": "tsc-watch --onSuccess \"node ./dist/index.js\"",
+    "build": "rimraf dist && tsc"
   },
   "type": "module",
   "keywords": [],
@@ -17,6 +16,7 @@
     "@types/node": "^22.13.4",
     "nodemon": "^3.1.9",
     "rimraf": "^6.0.1",
+    "tsc-watch": "^6.2.1",
     "typescript": "^5.7.3"
   },
   "dependencies": {
