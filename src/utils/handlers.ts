@@ -59,7 +59,7 @@ export async function sendStickyMessageIfExists(
 }
 
 export async function checkForTicketMessage(message: Message) {
-  const { channel, author, content, mentions } = message;
+  const { channel, author, embeds, mentions } = message;
 
   const existingRow = getTicketTrackerByChannel.get({ channelId: channel.id });
 
@@ -67,7 +67,8 @@ export async function checkForTicketMessage(message: Message) {
 
   if (author.id !== process.env.TICKET_TOOL_BOT_ID) return;
 
-  if (!content.toLowerCase().includes("welcome")) return;
+  if (!embeds[0]?.description?.startsWith("**Welcome to Moon Aim Support!**"))
+    return;
 
   const mentionedUser = mentions.parsedUsers.first();
 

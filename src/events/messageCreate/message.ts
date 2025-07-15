@@ -7,6 +7,7 @@ import {
   handleTrackingCommand,
   sendStickyMessageIfExists,
 } from "../../utils/handlers.js";
+import { isAdmin } from "../../utils/perms.js";
 
 export default async (message: Message) => {
   try {
@@ -23,14 +24,17 @@ export default async (message: Message) => {
       if (commandName === "tracking") await handleTrackingCommand(message);
 
       if (commandName === "sticky_set") {
+        isAdmin(message.member!);
         const remainingContent = message.content
           .split(`${prefix}${commandName}`)[1]
           ?.trim();
         await handleStickySetCommand(message, remainingContent);
       }
 
-      if (commandName === "sticky_remove")
+      if (commandName === "sticky_remove") {
+        isAdmin(message.member!);
         await handleStickyRemoveCommand(message);
+      }
 
       if (commandName === "hello") await handleHelloCommand(message);
     }
@@ -38,6 +42,8 @@ export default async (message: Message) => {
     await sendStickyMessageIfExists(message.channel);
     await checkForTicketMessage(message);
   } catch (error) {
+    if (error instanceof Error)
+      await message.reply(`Err! \`${error.message}\``).catch(console.error);
     console.log(error);
   }
 };
