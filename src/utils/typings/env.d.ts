@@ -2,6 +2,8 @@ declare global {
   namespace NodeJS {
     interface ProcessEnv {
       TOKEN: string;
+      TICKET_CATEGORY_ID: string;
+      TICKET_TOOL_BOT_ID: string;
     }
   }
 }

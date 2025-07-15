@@ -14,3 +14,14 @@ export interface extendedAPICommand
   ): Promise<Array<ApplicationCommandOptionChoiceData | string>>;
   execute(interaction: ChatInputCommandInteraction): Promise<any>;
 }
+
+export type channelIdQuery = { channelId: string };
+
+export type StickyMessage = channelIdQuery & {
+  content: string;
+};
+
+export interface TicketTracker {
+  channelId: string;
+  userId?: string;
+}
