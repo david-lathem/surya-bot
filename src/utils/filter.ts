@@ -21,7 +21,7 @@ export async function checkForFilters(message: Message<true>) {
   if (content.toLowerCase().includes("free")) {
     await message.delete();
 
-    await logsChannel?.send(
+    await logsChannel.send(
       `${author} sent a message containing **free**. Here's what they said:\n\`\`\`${content}\`\`\``
     );
   }
