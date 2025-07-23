@@ -14,7 +14,7 @@ export async function checkForFilters(message: Message<true>) {
     return;
 
   const logsChannel = message.client.channels.cache.get(
-    process.env.LOGS_CHANNEL_ID!
+    process.env.LOGS_CHANNEL_ID
   ) as TextChannel;
 
   // 1. Filter word check
