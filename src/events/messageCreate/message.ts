@@ -2,12 +2,15 @@ import { Message } from "discord.js";
 import {
   checkForTicketMessage,
   handleHelloCommand,
+  handleMenuCommand,
+  handleReviewCommand,
   handleStickyRemoveCommand,
   handleStickySetCommand,
   handleTrackingCommand,
   sendStickyMessageIfExists,
 } from "../../utils/handlers.js";
 import { isAdmin } from "../../utils/perms.js";
+import { checkForFilters } from "../../utils/filter.js";
 
 export default async (message: Message) => {
   try {
@@ -21,7 +24,25 @@ export default async (message: Message) => {
     const commandName = stuffOtherThanCmdName.split(" ")[0].trim();
 
     if (message.content.split(" ")[0].trim() === "?" + commandName) {
-      if (commandName === "tracking") await handleTrackingCommand(message);
+      let shouldDeleteOriginalMessage: Boolean = false;
+
+      if (commandName === "tracking") {
+        await handleTrackingCommand(message);
+        shouldDeleteOriginalMessage = true;
+      }
+      if (commandName === "review") {
+        await handleReviewCommand(message);
+        shouldDeleteOriginalMessage = true;
+      }
+      if (commandName === "menu") {
+        await handleMenuCommand(message);
+        shouldDeleteOriginalMessage = true;
+      }
+
+      if (commandName === "hello") {
+        await handleHelloCommand(message);
+        shouldDeleteOriginalMessage = true;
+      }
 
       if (commandName === "sticky_set") {
         isAdmin(message.member!);
@@ -36,11 +57,13 @@ export default async (message: Message) => {
         await handleStickyRemoveCommand(message);
       }
 
-      if (commandName === "hello") await handleHelloCommand(message);
+      if (shouldDeleteOriginalMessage)
+        await message.delete().catch(console.error); // original message gets deleted somehow either by user or our bot before it reaches this if condition
     }
 
-    await sendStickyMessageIfExists(message.channel);
+    await checkForFilters(message);
     await checkForTicketMessage(message);
+    await sendStickyMessageIfExists(message.channel);
   } catch (error) {
     if (error instanceof Error)
       await message.reply(`Err! \`${error.message}\``).catch(console.error);

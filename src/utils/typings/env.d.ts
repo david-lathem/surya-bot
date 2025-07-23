@@ -3,6 +3,9 @@ declare global {
     interface ProcessEnv {
       TOKEN: string;
       TICKET_CATEGORY_ID: string;
+      LOGS_CHANNEL_ID: string;
+      USER_IDS_TO_NOT_APPLY_FILTER: string;
+      WELCOME_ROLE_ID: string;
       TICKET_TOOL_BOT_ID: string;
     }
   }

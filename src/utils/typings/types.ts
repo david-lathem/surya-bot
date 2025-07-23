@@ -16,8 +16,10 @@ export interface extendedAPICommand
 }
 
 export type channelIdQuery = { channelId: string };
+export type updateStickyMessage = channelIdQuery & { messageId: string }
 
 export type StickyMessage = channelIdQuery & {
+  messageId?: string;
   content: string;
 };
 

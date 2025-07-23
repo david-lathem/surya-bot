@@ -2,6 +2,7 @@ import {
   channelIdQuery,
   StickyMessage,
   TicketTracker,
+  updateStickyMessage,
 } from "../utils/typings/types.js";
 import db from "./index.js";
 
@@ -11,6 +12,10 @@ export const upsertStickyMessage = db.prepare<StickyMessage>(`
   VALUES (@channelId, @content)
   ON CONFLICT(channelId) DO UPDATE SET
     content = excluded.content
+`);
+
+export const updateStickyMessageId = db.prepare<updateStickyMessage>(`
+  UPDATE sticky_messages SET messageId = @messageId WHERE channelId = @channelId;
 `);
 
 export const deleteStickyMessage = db.prepare<channelIdQuery>(`

@@ -13,3 +13,7 @@ db.exec(`
     userId TEXT
   );
 `);
+
+// db.exec(`
+//   ALTER TABLE sticky_messages ADD COLUMN messageId TEXT UNQIUE;
+// `);

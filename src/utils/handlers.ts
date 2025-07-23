@@ -1,8 +1,9 @@
-import { GuildTextBasedChannel, Message } from "discord.js";
+import { GuildTextBasedChannel, Message, TextChannel } from "discord.js";
 import {
   deleteStickyMessage,
   getStickyMessage,
   getTicketTrackerByChannel,
+  updateStickyMessageId,
   updateTicketTrackerUser,
   upsertStickyMessage,
 } from "../database/queries.js";
@@ -23,6 +24,30 @@ Make sure the **Zen LED lights turn gold** — this indicates that auto-tracking
   await message.channel.send(reply);
 };
 
+export const handleReviewCommand = async (message: Message<true>) => {
+  const reply = `
+If you’re enjoying this script, could you take a few seconds to leave us a free review? It only takes a moment and really helps us out! You can leave your review here: https://discord.com/channels/1282790220366086226/1365773142735454420
+  `.trim();
+
+  await message.channel.send(reply);
+};
+
+export const handleMenuCommand = async (message: Message<true>) => {
+  const reply = `
+**To open the mod menu:**
+
+• PlayStation:  Press L2 + Menu
+• Xbox:  Press LT + Menu
+
+**To exit the menu:**
+
+• PlayStation:  Press ○ (Circle)
+• Xbox:  Press B
+  `.trim();
+
+  await message.channel.send(reply);
+};
+
 export const handleStickySetCommand = async (
   message: Message<true>,
   content: string
@@ -34,8 +59,6 @@ export const handleStickySetCommand = async (
     channelId: message.channel.id,
     content: content,
   });
-
-  await message.reply("✅ Sticky message set.");
 };
 
 export const handleStickyRemoveCommand = async (message: Message) => {
@@ -55,7 +78,15 @@ export async function sendStickyMessageIfExists(
 
   if (!sticky) return;
 
-  await channel.send(sticky.content);
+  if (sticky.messageId)
+    await channel.messages.delete(sticky.messageId).catch(console.error);
+
+  const newStickyMessage = await channel.send(sticky.content);
+
+  updateStickyMessageId.run({
+    channelId: channel.id,
+    messageId: newStickyMessage.id,
+  });
 }
 
 export async function checkForTicketMessage(message: Message) {
@@ -96,3 +127,4 @@ export async function handleHelloCommand(message: Message<true>) {
     `Hey <@${row.userId}>, thanks so much for opening a ticket! How may we help you? Are you interested in purchasing or have a general question. Let me know! I’ll be glad to assist you to the best of my ability.`
   );
 }
+
